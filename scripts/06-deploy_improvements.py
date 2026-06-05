@@ -180,6 +180,33 @@ for f in SITE.glob("*.html"):
 print(f"  Total: {removed} arquivos limpos de RSS")
 
 # ========================================================================
+# TAREFA 2b: Adicionar <base href="/"> em todos os HTMLs
+# (necessário para que URLs relativas funcionem em URLs clean com barra)
+# ========================================================================
+print("\n" + "=" * 70)
+print("TAREFA 2b: Adicionar <base href=\"/\"> em todos os HTMLs")
+print("=" * 70)
+
+BASE_TAG = '<base href="/">'
+base_added = 0
+base_existing = 0
+for f in SITE.glob("*.html"):
+    content = f.read_text(encoding="utf-8", errors="ignore")
+    if re.search(r'<base\s+href=', content, re.IGNORECASE):
+        base_existing += 1
+        continue
+    new_content = re.sub(
+        r'(<head[^>]*>)',
+        rf'\1\n    {BASE_TAG}',
+        content,
+        count=1
+    )
+    if new_content != content:
+        f.write_text(new_content, encoding="utf-8")
+        base_added += 1
+print(f"  ✓ {base_added} <base> adicionados, {base_existing} já tinham")
+
+# ========================================================================
 # TAREFA 2: Lazy loading + uso de imagens menores
 # ========================================================================
 print("\n" + "=" * 70)
@@ -246,17 +273,17 @@ htaccess_lines = [
     "<IfModule mod_rewrite.c>",
     "    RewriteEngine On",
     "",
-    "    # Remove .html das URLs (entrada)",
-    "    RewriteCond %{REQUEST_FILENAME} !-d",
-    "    RewriteCond %{REQUEST_FILENAME}\\.html -f",
-    "    RewriteRule ^([^/]+)/?$ $1.html [L]",
-    "",
     "    # /index.html → /",
     "    RewriteRule ^index\\.html$ / [R=301,L]",
     "",
-    "    # /pagina.html → /pagina/  (redireciona para URL limpa)",
+    "    # /Nome.html → /Nome/  (canonical/SEO)",
     "    RewriteCond %{REQUEST_METHOD} !POST",
     "    RewriteRule ^([^/]+)\\.html$ /$1/ [R=301,L]",
+    "",
+    "    # /Nome/ → serve /Nome.html  (rewrite interno, sem redirect)",
+    "    RewriteCond %{REQUEST_FILENAME} !-f",
+    "    RewriteCond %{REQUEST_FILENAME} !-d",
+    "    RewriteRule ^([^/]+)/?$ $1.html [L]",
     "</IfModule>",
     "",
     "# ----------------------------------------",

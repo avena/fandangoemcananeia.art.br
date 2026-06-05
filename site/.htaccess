@@ -20,17 +20,17 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Remove .html das URLs (entrada)
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME}\.html -f
-    RewriteRule ^([^/]+)/?$ $1.html [L]
-
     # /index.html → /
     RewriteRule ^index\.html$ / [R=301,L]
 
-    # /pagina.html → /pagina/  (redireciona para URL limpa)
+    # /Nome.html → /Nome/  (canonical/SEO)
     RewriteCond %{REQUEST_METHOD} !POST
     RewriteRule ^([^/]+)\.html$ /$1/ [R=301,L]
+
+    # /Nome/ → serve /Nome.html  (rewrite interno, sem redirect)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^([^/]+)/?$ $1.html [L]
 </IfModule>
 
 # ----------------------------------------
@@ -116,8 +116,7 @@ AddDefaultCharset UTF-8
 # Impedir listagem de diretórios
 Options -Indexes
 
-# Proteger arquivos sensíveis
+# Proteger arquivos sensíveis (sintaxe Apache 2.4)
 <FilesMatch "^\.(htaccess|htpasswd|gitignore|env)$">
-    Order Allow,Deny
-    Deny from all
+    Require all denied
 </FilesMatch>
