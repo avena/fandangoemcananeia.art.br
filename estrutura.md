@@ -1,14 +1,48 @@
 # Estrutura do site Fandango em Cananéia (versão estática)
 
 **Origem:** <https://www.fandangoemcananeia.art.br/>  
-**Gerado em:** 2026-06-05T06:13:40-03:00  
-**Total de páginas:** 71  
+**Servidor de produção:** Dreamhost (Apache 2.4 + PHP 8.5.5 via FastCGI)  
+**Atualizado em:** 2026-06-05 (Plano D deploy)  
+**Total de páginas:** 72 (incluindo `404.html`)  
 **Total de assets únicos referenciados:** 1076  
-**Tamanho total do site local:** 240.4 MB
+**Tamanho total do site local:** ~245 MB
+
+## 🚦 Estado atual (junho/2026)
+
+| Item | Status |
+|------|--------|
+| Servidor | Dreamhost (Apache 2.4 + PHP 8.5.5) |
+| URLs | `.html` (sem clean URLs — ver nota abaixo) |
+| Loop 301 | ✅ Resolvido (Plano D) |
+| HTTPS | ✅ Forçado |
+| `sitemap.xml` | 70 URLs com `.html` + 1 homepage = 71 total |
+| `phpinfo.php` (debug) | No servidor (remover quando não precisar mais) |
+| Último deploy | `8a96099` (Plano D) + `475df28` (fix sitemap `ª`) |
+
+> **Por que `.html` nas URLs?** O servidor Dreamhost tem uma config global
+> (acima do `.htaccess`) que força trailing-slash em diretórios. Regras de
+> rewrite no `.htaccess` para gerar URLs limpas (`/Cananeia/` em vez de
+> `/Cananeia.html`) entravam em **loop infinito de 301**. A solução foi
+> aceitar URLs com `.html` e servir os arquivos diretamente, sem rewrite.
+> O site está 100% funcional.
 
 Site estático local pronto para abrir no navegador. Para publicar, o conteúdo de `site/` vai para a **raiz do servidor web**.
 
 (Os caminhos nesta documentação referem-se aos arquivos dentro de `site/`.)
+
+## URLs servidas pelo servidor
+
+| URL pública | Arquivo local |
+|-------------|---------------|
+| `/` | `index.html` |
+| `/Cananeia.html` | `Cananeia.html` |
+| `/Ze-Pereira.html` | `Ze-Pereira.html` |
+| `/1ª-Festa-do-Fandango-Caicara-de.html` | `1ª-Festa-do-Fandango-Caicara-de.html` |
+| `/404.html` (página de erro) | `404.html` |
+| `/sitemap.xml` | `sitemap.xml` |
+| `/robots.txt` | `robots.txt` |
+
+**URLs que retornam 404 (esperado):** `/Cananeia/` (sem `.html`), `/Cananeia` (sem `.html` e sem `/`), `/NaoExiste.html` (arquivo inexistente).
 
 ---
 
