@@ -1,0 +1,123 @@
+# ============================================
+# Fandango em Cananéia - site estático
+# Gerado em 2026-06-05T06:42:01.226276
+# ============================================
+
+# ----------------------------------------
+# 1. HTTPS - força redirecionamento
+# ----------------------------------------
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Força HTTPS
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+</IfModule>
+
+# ----------------------------------------
+# 2. URLs limpas (sem .html)
+# ----------------------------------------
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Remove .html das URLs (entrada)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}\.html -f
+    RewriteRule ^([^/]+)/?$ $1.html [L]
+
+    # /index.html → /
+    RewriteRule ^index\.html$ / [R=301,L]
+
+    # /pagina.html → /pagina/  (redireciona para URL limpa)
+    RewriteCond %{REQUEST_METHOD} !POST
+    RewriteRule ^([^/]+)\.html$ /$1/ [R=301,L]
+</IfModule>
+
+# ----------------------------------------
+# 3. Redirects 301 do SPIP original
+# ----------------------------------------
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # /spip.php?page=plan (sitemap antigo)
+    RewriteRule ^spip\.php$ / [R=301,L]
+
+    # /spip.php?page=login (não existe mais)
+    RewriteRule ^spip\.php\?page=login / [R=301,L]
+
+    # /spip.php?page=backend (RSS removido)
+    RewriteRule ^spip\.php\?page=backend / [R=301,L]
+
+    # /spip.php?action=cron
+    RewriteRule ^spip\.php\?action=cron / [R=301,L]
+
+    # Paginação antiga
+    RewriteCond %{QUERY_STRING} ^debut_articles=
+    RewriteRule ^(.*)$ /$1/ [R=301,L]
+</IfModule>
+
+# ----------------------------------------
+# 4. Cache de assets estáticos
+# ----------------------------------------
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/x-javascript "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    ExpiresDefault "access plus 1 day"
+</IfModule>
+
+# ----------------------------------------
+# 5. Compressão gzip
+# ----------------------------------------
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+    AddOutputFilterByType DEFLATE application/javascript application/x-javascript
+    AddOutputFilterByType DEFLATE application/json application/xml
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# ----------------------------------------
+# 6. Headers de segurança
+# ----------------------------------------
+<IfModule mod_headers.c>
+    # Impedir MIME-sniffing
+    Header set X-Content-Type-Options "nosniff"
+    # XSS protection
+    Header set X-XSS-Protection "1; mode=block"
+    # Política de referência
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    # Permitir framing (pode remover se não usar iframe)
+    Header always set X-Frame-Options "SAMEORIGIN"
+</IfModule>
+
+# ----------------------------------------
+# 7. Páginas de erro
+# ----------------------------------------
+ErrorDocument 404 /404.html
+ErrorDocument 500 /404.html
+
+# ----------------------------------------
+# 8. Configuração geral
+# ----------------------------------------
+DirectoryIndex index.html
+AddDefaultCharset UTF-8
+
+# Impedir listagem de diretórios
+Options -Indexes
+
+# Proteger arquivos sensíveis
+<FilesMatch "^\.(htaccess|htpasswd|gitignore|env)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>

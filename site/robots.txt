@@ -1,0 +1,16 @@
+# Fandango em Cananéia - robots.txt
+# Versão estática do site
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /includes/
+Disallow: /config/
+Disallow: /logs/
+Disallow: /backup/
+Disallow: /.env
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+
+# Sitemap
+Sitemap: https://fandangoemcananeia.art.br/sitemap.xml
