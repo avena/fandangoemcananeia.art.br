@@ -1,0 +1,242 @@
+==========================================
+RELATÓRIO DE VERIFICAÇÃO - PLANO D
+Commit deployado: 8a96099
+Data/Hora: 2026-06-05 09:19:57 -03
+Hostname: LinuxMint
+==========================================
+
+Mudança aplicada:
+  - Bloco 2 (clean URLs) REMOVIDO do .htaccess
+  - Options -MultiViews e DirectorySlash Off removidos
+  - 70 URLs do sitemap.xml atualizadas para .html
+
+==========================================
+BLOCO DE TESTES - URLs principais
+==========================================
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/
+==========================================
+HTTP/2 200 
+content-length: 25127
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/Cananeia.html
+==========================================
+HTTP/2 200 
+content-length: 22984
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/Ze-Pereira.html
+==========================================
+HTTP/2 200 
+content-length: 20224
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/Natureza-80.html
+==========================================
+HTTP/2 200 
+content-length: 26049
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/Puxirao.html
+==========================================
+HTTP/2 200 
+content-length: 22089
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/Equipe.html
+==========================================
+HTTP/2 200 
+content-length: 27651
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/1-Festa-do-Fandango-Caicara-de.html
+==========================================
+HTTP/2 404 
+content-length: 701
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/Objetivos.html
+==========================================
+HTTP/2 200 
+content-length: 21158
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/Parceiros.html
+==========================================
+HTTP/2 200 
+content-length: 25284
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/Projeto.html
+==========================================
+HTTP/2 200 
+content-length: 19206
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/Produtos-sociais.html
+==========================================
+HTTP/2 200 
+content-length: 21625
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/Filme.html
+==========================================
+HTTP/2 200 
+content-length: 45879
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/Cananeia/
+==========================================
+HTTP/2 404 
+content-length: 701
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/Cananeia
+==========================================
+HTTP/2 404 
+content-length: 701
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/Ze-Pereira/
+==========================================
+HTTP/2 404 
+content-length: 701
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/NaoExiste.html
+==========================================
+HTTP/2 404 
+content-length: 701
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/PaginaInexistente.html
+==========================================
+HTTP/2 404 
+content-length: 701
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/404.html
+==========================================
+HTTP/2 200 
+content-length: 701
+content-type: text/html; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/sitemap.xml
+==========================================
+HTTP/2 200 
+content-length: 9534
+content-type: application/xml
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/robots.txt
+==========================================
+HTTP/2 200 
+content-length: 310
+content-type: text/plain; charset=UTF-8
+
+==========================================
+URL: https://www.fandangoemcananeia.art.br/phpinfo.php
+==========================================
+HTTP/2 200 
+content-type: text/html; charset=UTF-8
+
+==========================================
+VERIFICAÇÕES ADICIONAIS
+==========================================
+
+--- Sitemap: contagem de URLs com .html ---
+URLs com .html: 70 (esperado: 70)
+
+--- Sitemap: total de URLs ---
+Total de URLs: 71 (esperado: 71)
+
+--- PHP version ativa ---
+Detectado: PHP Version 8.5.5
+
+--- 404.html acessa conteúdo correto? ---
+Termos relacionados a 404 encontrados: 3 (esperado: >=1)
+
+--- Servidor HTTP ---
+server: Apache
+
+--- Última modificação do index.html (Last-Modified) ---
+last-modified: Fri, 05 Jun 2026 10:45:11 GMT
+
+==========================================
+INVESTIGAÇÃO: 1ª-Festa URL com caractere especial
+==========================================
+
+O arquivo existe localmente: 1ª-Festa-do-Fandango-Caicara-de.html
+Caractere ª (U+00AA) precisa ser URL-encoded.
+
+--- Teste com URL-encode (%C2%AA) ---
+HTTP/2 200 
+content-length: 69269
+content-type: text/html; charset=UTF-8
+
+--- Teste com caractere literal ---
+HTTP/2 200 
+content-length: 69269
+content-type: text/html; charset=UTF-8
+
+--- Verificar no sitemap ---
+        <loc>https://fandangoemcananeia.art.br/1-Festa-do-Fandango-Caicara-de.html</loc>
+
+
+==========================================
+FIX APLICADO: sitemap com caractere ª
+==========================================
+
+Bug: sitemap tinha URL '1-Festa...' (sem ª)
+Arquivo real: '1ª-Festa-do-Fandango-Caicara-de.html' (com ª)
+Resultado: Google ia tentar crawl URL errada e dar 404
+
+Fix: sitemap atualizado com literal ª (mesmo do filename)
+Validação: URL https://fandangoemcananeia.art.br/1ª-Festa-do-Fandango-Caicara-de.html
+           agora retorna 200 (69269 bytes)
+
+=== RESUMO FINAL DO PLANO D ===
+
+✅ TODAS as 12 URLs com .html retornam 200 (sem loop)
+✅ /404.html acessível e funcionando (ErrorDocument 200)
+✅ /NaoExiste.html retorna 404 corretamente
+✅ URLs sem .html retornam 404 (sem rewrite fantasma)
+✅ sitemap.xml: 70 URLs com .html + 1 homepage = 71 total
+✅ PHP 8.5.5 ativo no servidor
+✅ Servidor: Apache
+✅ Last-Modified: 2026-06-05 10:45:11 GMT (deploy recente)
+
+BUG ENCONTRADO E CORRIGIDO:
+  - sitemap.xml tinha URL '1-Festa...' (sem ª)
+  - Corrigido para '1ª-Festa...' (com ª, igual ao filename)
+  - Arquivo real: 1ª-Festa-do-Fandango-Caicara-de.html (69269 bytes)
+
+MELHORIAS vs. PLANO A (commit 342bd91):
+  Antes: 8/11 URLs em loop 301
+  Agora: 0/19 URLs em loop (todas funcionais)
+
+PRÓXIMOS PASSOS OPCIONAIS:
+  1. Remover phpinfo.php (era só diagnóstico)
+  2. Adicionar phpinfo.php ao .gitignore
+  3. Considerar remover <base href="/"> dos HTMLs (inofensivo mas cleanup)
+  4. Atualizar README.md/estrutura.md com nova estrutura de URLs
