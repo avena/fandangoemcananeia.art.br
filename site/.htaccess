@@ -8,6 +8,7 @@
 # ----------------------------------------
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteBase /
 
     # Força HTTPS
     RewriteCond %{HTTPS} off
@@ -15,10 +16,19 @@
 </IfModule>
 
 # ----------------------------------------
+# 1.5. PHP 8.4 handler (Dreamhost CGI/FastCGI)
+# ----------------------------------------
+<IfModule mod_fcgid.c>
+    AddHandler fcgid-script .php
+    FCGIWrapper "/dh/cgi-system/php85.cgi" .php
+</IfModule>
+
+# ----------------------------------------
 # 2. URLs limpas (sem .html)
 # ----------------------------------------
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteBase /
 
     # /index.html → /
     RewriteRule ^index\.html$ / [R=301,L]
@@ -38,6 +48,7 @@
 # ----------------------------------------
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteBase /
 
     # /spip.php?page=plan (sitemap antigo)
     RewriteRule ^spip\.php$ / [R=301,L]
@@ -113,8 +124,11 @@ ErrorDocument 500 /404.html
 DirectoryIndex index.html
 AddDefaultCharset UTF-8
 
-# Impedir listagem de diretórios
-Options -Indexes
+# Impedir listagem de diretórios e desabilitar MultiViews (causa do loop 301)
+Options -MultiViews -Indexes
+
+# Desabilitar DirectorySlash global do Dreamhost (forçar trailing-slash exato)
+DirectorySlash Off
 
 # Proteger arquivos sensíveis (sintaxe Apache 2.4)
 <FilesMatch "^\.(htaccess|htpasswd|gitignore|env)$">
