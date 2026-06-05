@@ -4070,7 +4070,51 @@ Para cada página, lista dos assets (imagens, CSS, JS) referenciados e confirmad
 
 ---
 
----## 🔀 Redirects 301 (preservação de SEO)Lista de redirecionamentos do URL antigo (SPIP) para o URL novo (estático limpo).Aplicado automaticamente pelo `.htaccess` no servidor Apache.| URL antigo (SPIP) | URL novo (estático limpo) | Página ||---|---|---|| `/` | `/` | Início || `/1ª-Festa-do-Fandango-Caicara-de` | `/1-Festa-do-Fandango-Caicara-de/` | 1ª Festa do Fandango Caiçara de Cananeia || `/2ª-Festa-do-Fandango-Caicara-de` | `/2-Festa-do-Fandango-Caicara-de/` | 2ª Festa do Fandango Caiçara de Cananeia || `/Natureza,80` | `/Natureza-80/` | Natureza || `/slider1` | `/` | Slide 1 do SPIP (placeholder) || `/slider2` | `/` | Slide 2 do SPIP (placeholder) || `/Nova-materia` | `/` | Página vazia de exemplo do SPIP || `/icone` | `/` | Página vazia de ícone || `/debut_articles=*` | `/` | Paginação antiga do SPIP || `/spip.php?page=login` | `/` | Login do admin (removido) || `/spip.php?page=plan` | `/` | Mapa do site antigo (substituído por sitemap.xml) || `/spip.php?page=backend` | `/` | Feed RSS (removido - site estático) || `/spip.php?action=cron` | `/` | Tarefa agendada SPIP (removida) || `/spip.php?page=barre_outils_*` | `/` | CSS da barra de edição admin (removido) || `/favicon.ico` | `/` | Favicon (arquivo original vazio, removido) |### Regra geral de rewriteTodas as URLs do tipo `/Nome.html` são reescritas para `/Nome/` (sem extensão).Exemplo: `/Ze-Pereira.html` → `/Ze-Pereira/`### Configuração HTTPSO `.htaccess` força HTTPS. Todas as requisições HTTP são redirecionadas (301) para HTTPS.
+
+---
+
+---
+
+## 🔀 Redirects 301 (preservação de SEO)
+
+Lista de redirecionamentos do URL antigo (SPIP) para o URL novo (estático limpo).
+Aplicado automaticamente pelo `.htaccess` no servidor Apache.
+
+### URLs que mudaram de slug
+
+| URL antigo (SPIP) | URL novo (estático limpo) | Página |
+|---|---|---|
+| `/` | `/` | Início |
+| `/1ª-Festa-do-Fandango-Caicara-de` | `/1-Festa-do-Fandango-Caicara-de/` | 1ª Festa do Fandango Caiçara de Cananeia |
+| `/2ª-Festa-do-Fandango-Caicara-de` | `/2-Festa-do-Fandango-Caicara-de/` | 2ª Festa do Fandango Caiçara de Cananeia |
+| `/Natureza,80` | `/Natureza-80/` | Natureza (artigo 80) |
+
+### Páginas removidas (vão para `/`)
+
+| URL removido | Motivo |
+|---|---|
+| `/slider1` | Slide 1 do SPIP (placeholder) |
+| `/slider2` | Slide 2 do SPIP (placeholder) |
+| `/Nova-materia` | Página vazia de exemplo do SPIP |
+| `/icone` | Página vazia de ícone |
+| `?debut_articles=*` | Paginação antiga do SPIP |
+| `/spip.php?page=login` | Login do admin (removido) |
+| `/spip.php?page=plan` | Mapa do site antigo (substituído por sitemap.xml) |
+| `/spip.php?page=backend` | Feed RSS (removido - site estático) |
+| `/spip.php?action=cron` | Tarefa agendada SPIP (removida) |
+| `/spip.php?page=barre_outils_*` | CSS da barra de edição admin (removido) |
+| `/favicon.ico` | Favicon (arquivo original vazio, removido) |
+
+### Regra geral de rewrite
+
+Todas as URLs do tipo `/Nome.html` são reescritas para `/Nome/` (sem extensão).
+Exemplo: `/Ze-Pereira.html` → `/Ze-Pereira/`
+
+### Configuração HTTPS
+
+O `.htaccess` força HTTPS. Todas as requisições HTTP são redirecionadas (301) para HTTPS.
+
+
 
 ## Lista consolidada de todos os assets
 

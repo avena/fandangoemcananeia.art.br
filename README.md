@@ -15,9 +15,11 @@ conteúdo de `site/` deve ir para a **raiz do servidor web** (DocumentRoot).
 .
 ├── site/                  ← Conteúdo publicável (vai para a raiz do servidor)
 │   ├── index.html
-│   ├── *.html             ← 71 páginas HTML
+│   ├── *.html             ← 71 páginas HTML + 404.html
 │   ├── 404.html           ← Página de erro customizada
-│   ├── .htaccess          ← Configuração Apache (cache, gzip, 404)
+│   ├── .htaccess          ← Configuração Apache (HTTPS, URLs limpas, cache, gzip)
+│   ├── sitemap.xml        ← Mapa do site para SEO
+│   ├── robots.txt         ← Instruções para crawlers
 │   ├── IMG/               ← Imagens originais dos artigos (217 MB)
 │   ├── local/             ← Imagens em cache geradas pelo SPIP (26 MB)
 │   ├── plugins/           ← Tema e extensões (theme_californiumite, fancybox, etc.)
@@ -25,9 +27,69 @@ conteúdo de `site/` deve ir para a **raiz do servidor web** (DocumentRoot).
 │   ├── extensions/        ← Extensões SPIP
 │   ├── squelettes-dist/   ← Templates base
 │   └── prive/             ← Arquivos do painel admin (não usado em estático)
+├── scripts/               ← Scripts Python que geram/atualizam o site
+│   ├── run_all.py         ← Roda todos os scripts em ordem
+│   ├── 01-build_static.py ← Baixa todas as páginas e assets
+│   ├── 02-cleanup.py      ← Limpa arquivos com nomes inválidos
+│   ├── 03-fix_missing.py  ← Baixa imagens faltantes
+│   ├── 04-final_fix.py    ← Corrige links finais (páginas duplicadas, etc.)
+│   ├── 05-final_cleanup.py← Remove SPIP/CMS references
+│   ├── 06-deploy_improvements.py ← HTTPS, lazy loading, sitemap, robots
+│   └── 07-gen_docs.py     ← Regenera README.md e estrutura.md
 ├── README.md              ← Este arquivo
 └── estrutura.md           ← Listagem completa de todas as páginas e assets
 ```
+
+## 🔄 Regenerar/atualizar o site estático
+
+Para refazer tudo do zero (do site SPIP original):
+
+```bash
+python3.12 scripts/run_all.py
+```
+
+Ou rodar passo a passo:
+
+```bash
+python3.12 scripts/01-build_static.py   # Baixa páginas
+python3.12 scripts/02-cleanup.py        # Limpa nomes
+python3.12 scripts/03-fix_missing.py     # Baixa imagens faltantes
+python3.12 scripts/04-final_fix.py       # Corrige links duplicados
+python3.12 scripts/05-final_cleanup.py   # Remove SPIP/CMS
+python3.12 scripts/06-deploy_improvements.py  # HTTPS, sitemap, robots, etc
+python3.12 scripts/07-gen_docs.py        # Regenera docs
+```
+
+**Requisitos:** Python 3.12+ com `requests` e `beautifulsoup4` instalados.
+
+Para instalar dependências (se necessário):
+```bash
+pip install --user --break-system-packages requests beautifulsoup4 lxml
+```
+
+**Configurar a URL base**: o script `01-build_static.py` tem `BASE_URL = "https://www.fandangoemcananeia.art.br"` no topo. Edite essa linha se o site original mudar de endereço.
+
+---
+
+## ✅ Status final da conversão
+
+| Item | Valor |
+|---|---|
+| Páginas HTML | 72 (incluindo 404.html) |
+| Assets (CSS, JS, imagens, fontes) | 1076 únicos |
+| Tamanho total do site | 245 MB |
+| Links internos verificados | 8962 / 8962 OK |
+| Referências externas a `fandangoemcananeia.art.br` | 0 |
+| Referências a `spip.php` (backend dinâmico) | 0 |
+| Atributos `loading="lazy"` adicionados | 1399 |
+| Arquivos do site | 1800 |
+| `.htaccess` com HTTPS + clean URLs | ✓ |
+| `sitemap.xml` | ✓ (70 URLs) |
+| `robots.txt` | ✓ |
+| `404.html` customizado | ✓ |
+| Formulários de contato/login | neutralizados |
+| Menus, slideshow, fancybox, layout | preservados |
+| Redirects 301 documentados | ✓ (ver `estrutura.md`) |
 
 ---
 
@@ -172,30 +234,8 @@ os autores do projeto antes de republicar.
 
 ## 🔄 Regenerar o site estático a partir do SPIP original
 
-Os scripts que geraram esta versão estão em `/tmp/` (na máquina onde foi feito):
-
-- `build_static.py` — script principal
-- `cleanup.py`, `fix_missing.py`, `final_fix.py` — passes de limpeza
-- `prepare_deploy.py`, `final_cleanup.py` — preparação para deploy
-- `gen_docs.py` — gera `README.md` e `estrutura.md`
-
-Para refazer do zero:
-
-```bash
-# 1. Baixar todas as páginas
-python3.12 /tmp/build_static.py
-
-# 2. Limpar nomes, duplicações
-python3.12 /tmp/cleanup.py
-python3.12 /tmp/fix_missing.py
-python3.12 /tmp/final_fix.py
-
-# 3. Limpar referências SPIP/CMS
-python3.12 /tmp/final_cleanup.py
-
-# 4. Regenerar documentação
-python3.12 /tmp/gen_docs.py
-```
+Os scripts Python para regenerar/atualizar o site estão em `scripts/`. Veja
+a seção "Regenerar/atualizar o site estático" acima para detalhes.
 
 ---
 
