@@ -1,75 +1,49 @@
 # ============================================
 # Fandango em Cananéia - site estático
-# Gerado em 2026-06-05T06:42:01.226276
+# Plano D: URLs com .html (sem clean URLs)
+# Gerado em 2026-06-05
 # ============================================
 
-# ----------------------------------------
-# 1. HTTPS - força redirecionamento
-# ----------------------------------------
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /
-
-    # Força HTTPS
-    RewriteCond %{HTTPS} off
-    RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
-</IfModule>
-
-# ----------------------------------------
-# 1.5. PHP 8.4 handler (Dreamhost CGI/FastCGI)
-# ----------------------------------------
+# 1. PHP 8.5 handler (Dreamhost CGI/FastCGI)
 <IfModule mod_fcgid.c>
     AddHandler fcgid-script .php
     FCGIWrapper "/dh/cgi-system/php85.cgi" .php
 </IfModule>
 
-# ----------------------------------------
-# 2. URLs limpas (sem .html)
-# ----------------------------------------
+# 2. HTTPS force
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
 
-    # /index.html → /
-    RewriteRule ^index\.html$ / [R=301,L]
-
-    # /Nome.html → /Nome/  (canonical/SEO)
-    RewriteCond %{REQUEST_METHOD} !POST
-    RewriteRule ^([^/]+)\.html$ /$1/ [R=301,L]
-
-    # /Nome/ → serve /Nome.html  (rewrite interno, sem redirect)
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^([^/]+)/?$ $1.html [L]
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 </IfModule>
 
-# ----------------------------------------
-# 3. Redirects 301 do SPIP original
-# ----------------------------------------
+# 3. /index.html → / (canonical homepage)
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
 
-    # /spip.php?page=plan (sitemap antigo)
+    RewriteRule ^index\.html$ / [R=301,L]
+</IfModule>
+
+# (Bloco 2 de clean URLs REMOVIDO - causava loop 301 no Dreamhost
+#  por conflito entre RewriteRule do .htaccess e config global)
+
+# 4. Redirects 301 do SPIP original (compatibilidade SEO)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
     RewriteRule ^spip\.php$ / [R=301,L]
-
-    # /spip.php?page=login (não existe mais)
     RewriteRule ^spip\.php\?page=login / [R=301,L]
-
-    # /spip.php?page=backend (RSS removido)
     RewriteRule ^spip\.php\?page=backend / [R=301,L]
-
-    # /spip.php?action=cron
     RewriteRule ^spip\.php\?action=cron / [R=301,L]
-
-    # Paginação antiga
     RewriteCond %{QUERY_STRING} ^debut_articles=
     RewriteRule ^(.*)$ /$1/ [R=301,L]
 </IfModule>
 
-# ----------------------------------------
-# 4. Cache de assets estáticos
-# ----------------------------------------
+# 5. Cache de assets estáticos
 <IfModule mod_expires.c>
     ExpiresActive On
     ExpiresByType image/jpeg "access plus 1 year"
@@ -88,9 +62,7 @@
     ExpiresDefault "access plus 1 day"
 </IfModule>
 
-# ----------------------------------------
-# 5. Compressão gzip
-# ----------------------------------------
+# 6. Compressão gzip
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
     AddOutputFilterByType DEFLATE application/javascript application/x-javascript
@@ -98,39 +70,24 @@
     AddOutputFilterByType DEFLATE image/svg+xml
 </IfModule>
 
-# ----------------------------------------
-# 6. Headers de segurança
-# ----------------------------------------
+# 7. Headers de segurança
 <IfModule mod_headers.c>
-    # Impedir MIME-sniffing
     Header set X-Content-Type-Options "nosniff"
-    # XSS protection
     Header set X-XSS-Protection "1; mode=block"
-    # Política de referência
     Header set Referrer-Policy "strict-origin-when-cross-origin"
-    # Permitir framing (pode remover se não usar iframe)
     Header always set X-Frame-Options "SAMEORIGIN"
 </IfModule>
 
-# ----------------------------------------
-# 7. Páginas de erro
-# ----------------------------------------
+# 8. Páginas de erro
 ErrorDocument 404 /404.html
 ErrorDocument 500 /404.html
 
-# ----------------------------------------
-# 8. Configuração geral
-# ----------------------------------------
+# 9. Configuração geral
 DirectoryIndex index.html
 AddDefaultCharset UTF-8
+Options -Indexes
 
-# Impedir listagem de diretórios e desabilitar MultiViews (causa do loop 301)
-Options -MultiViews -Indexes
-
-# Desabilitar DirectorySlash global do Dreamhost (forçar trailing-slash exato)
-DirectorySlash Off
-
-# Proteger arquivos sensíveis (sintaxe Apache 2.4)
+# 10. Proteger dotfiles
 <FilesMatch "^\.(htaccess|htpasswd|gitignore|env)$">
     Require all denied
 </FilesMatch>
